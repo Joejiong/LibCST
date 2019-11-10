@@ -41,6 +41,20 @@ def _cst_node_equality_func(
         raise AssertionError(f"\n{a!r}\nis not deeply equal to \n{b!r}{suffix}")
 
 
+def parse_expression_as(**config: Any) -> Callable[[str], cst.BaseExpression]:
+    def inner(code: str) -> cst.BaseExpression:
+        return cst.parse_expression(code, config=cst.PartialParserConfig(**config))
+
+    return inner
+
+
+def parse_statement_as(**config: Any) -> Callable[[str], cst.BaseStatement]:
+    def inner(code: str) -> cst.BaseStatement:
+        return cst.parse_statement(code, config=cst.PartialParserConfig(**config))
+
+    return inner
+
+
 # We can't use an ABCMeta here, because of metaclass conflicts
 class CSTNodeTest(UnitTest):
     def setUp(self) -> None:
