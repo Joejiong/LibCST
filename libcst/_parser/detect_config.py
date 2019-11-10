@@ -10,7 +10,7 @@ import re
 from dataclasses import dataclass
 from io import BytesIO
 from tokenize import detect_encoding as py_tokenize_detect_encoding
-from typing import Iterable, Iterator, Pattern, Union, Set
+from typing import Iterable, Iterator, Pattern, Set, Union
 
 from libcst._nodes.whitespace import NEWLINE_RE
 from libcst._parser.parso.python.token import PythonTokenTypes, TokenType
@@ -82,6 +82,7 @@ def _detect_trailing_newline(source_str: str) -> bool:
         _CONTINUATION_RE.fullmatch(source_str[-2:])
         or _CONTINUATION_RE.fullmatch(source_str[-3:])
     )
+
 
 def _detect_future_imports(tokens: Iterable[Token]) -> Set[str]:
     """

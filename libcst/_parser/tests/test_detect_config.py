@@ -3,10 +3,10 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import dataclasses
+
 # pyre-strict
 from typing import Union
-
-import dataclasses
 
 from libcst._parser.detect_config import detect_config
 from libcst._parser.parso.utils import PythonVersionInfo
@@ -269,7 +269,12 @@ class TestDetectConfig(UnitTest):
                 "detect_trailing_newline": True,
                 "detect_default_newline": True,
                 "expected_config": ParserConfig(
-                    lines=["# C\n", "''' D '''\n", "from __future__ import a as b\n", ""],
+                    lines=[
+                        "# C\n",
+                        "''' D '''\n",
+                        "from __future__ import a as b\n",
+                        "",
+                    ],
                     encoding="utf-8",
                     default_indent="    ",
                     default_newline="\n",
@@ -287,7 +292,12 @@ class TestDetectConfig(UnitTest):
                 "detect_trailing_newline": True,
                 "detect_default_newline": True,
                 "expected_config": ParserConfig(
-                    lines=["from __future__ import a, b\n", "import os\n", "from __future__ import c\n", ""],
+                    lines=[
+                        "from __future__ import a, b\n",
+                        "import os\n",
+                        "from __future__ import c\n",
+                        "",
+                    ],
                     encoding="utf-8",
                     default_indent="    ",
                     default_newline="\n",
@@ -308,11 +318,13 @@ class TestDetectConfig(UnitTest):
         expected_config: ParserConfig,
     ) -> None:
         self.assertEqual(
-            dataclasses.asdict(detect_config(
-                source,
-                partial=partial,
-                detect_trailing_newline=detect_trailing_newline,
-                detect_default_newline=detect_default_newline,
-            ).config),
+            dataclasses.asdict(
+                detect_config(
+                    source,
+                    partial=partial,
+                    detect_trailing_newline=detect_trailing_newline,
+                    detect_default_newline=detect_default_newline,
+                ).config
+            ),
             dataclasses.asdict(expected_config),
         )
