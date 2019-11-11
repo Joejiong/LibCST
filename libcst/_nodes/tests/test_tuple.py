@@ -8,7 +8,7 @@ from typing import Any, Callable
 
 import libcst as cst
 from libcst import parse_expression, parse_statement
-from libcst._nodes.tests.base import CSTNodeTest
+from libcst._nodes.tests.base import CSTNodeTest, parse_expression_as
 from libcst.metadata import CodeRange
 from libcst.testing.utils import data_provider
 
@@ -264,3 +264,27 @@ class TupleTest(CSTNodeTest):
         self, get_node: Callable[[], cst.CSTNode], expected_re: str
     ) -> None:
         self.assert_invalid(get_node, expected_re)
+
+    @data_provider(
+        (
+            {
+                "code": "(a, *b)",
+                "parser": parse_expression_as(python_version="3.5"),
+                "expect_success": True,
+            },
+            {
+                "code": "(a, *b)",
+                "parser": parse_expression_as(python_version="3.3"),
+                "expect_success": False,
+            },
+        )
+    )
+    def test_versions(self, code, parser, expect_success) -> None:
+        # This body should get moved up to the base class, and the parser
+        # closure should move with it (and gain the ability to parse futures and
+        # take arbitrary config)
+        if not expect_success:
+            with self.assertRaises(cst.ParserSyntaxError):
+                parser(code)
+        else:
+            parser(code)

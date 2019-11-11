@@ -8,7 +8,7 @@ from typing import Any
 
 import libcst as cst
 from libcst import parse_expression
-from libcst._nodes.tests.base import CSTNodeTest
+from libcst._nodes.tests.base import CSTNodeTest, parse_expression_as
 from libcst.metadata import CodeRange
 from libcst.testing.utils import data_provider
 
@@ -172,3 +172,27 @@ class DictTest(CSTNodeTest):
     )
     def test_invalid(self, **kwargs: Any) -> None:
         self.assert_invalid(**kwargs)
+
+    @data_provider(
+        (
+            {
+                "code": "{**{}}",
+                "parser": parse_expression_as(python_version="3.5"),
+                "expect_success": True,
+            },
+            {
+                "code": "{**{}}",
+                "parser": parse_expression_as(python_version="3.3"),
+                "expect_success": False,
+            },
+        )
+    )
+    def test_versions(self, code, parser, expect_success) -> None:
+        # This body should get moved up to the base class, and the parser
+        # closure should move with it (and gain the ability to parse futures and
+        # take arbitrary config)
+        if not expect_success:
+            with self.assertRaises(cst.ParserSyntaxError):
+                parser(code)
+        else:
+            parser(code)
