@@ -52,7 +52,9 @@ from libcst._parser.whitespace_parser import parse_parenthesizable_whitespace
     ),
     version="<=3.5",
 )
-def convert_argslist(config: ParserConfig, children: Sequence[Any]) -> Any:
+def convert_argslist(  # noqa: C901: too complex
+    config: ParserConfig, children: Sequence[Any]
+) -> Any:
     params: List[Param] = []
     seen_default: bool = False
     star_arg: Union[Param, ParamStar, MaybeSentinel] = MaybeSentinel.DEFAULT
