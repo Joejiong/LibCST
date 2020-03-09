@@ -59,7 +59,7 @@ class AutoConfig(Enum):
         return str(self)
 
 
-KNOWN_PYTHON_VERSION_STRINGS = ["3.0", "3.1", "3.3", "3.5", "3.6", "3.7", "3.8"]
+KNOWN_PYTHON_VERSION_STRINGS = ["2.7", "3.0", "3.1", "3.3", "3.5", "3.6", "3.7", "3.8"]
 
 
 @add_slots
