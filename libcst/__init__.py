@@ -166,6 +166,8 @@ from libcst._nodes.statement import (
     NameItem,
     Nonlocal,
     Pass,
+    Py2Print,
+    Py2PrintExpr,
     Py2Raise,
     Raise,
     Return,
@@ -397,5 +399,7 @@ __all__ = [
     "VisitorMetadataProvider",
     "MetadataDependent",
     "MetadataWrapper",
+    "Py2Print",
+    "Py2PrintExpr",
     "Py2Raise",
 ]
