@@ -192,7 +192,10 @@ def convert_namedexpr_test(
     )
 
 
-@with_production("test", "or_test ['if' or_test 'else' test] | lambdef")
+@with_production(
+    "test", "or_test ['if' or_test 'else' test] | lambdef", version=">=2.5"
+)
+@with_production("test", "or_test | lambdef", version="<2.5")
 def convert_test(
     config: ParserConfig, children: typing.Sequence[typing.Any]
 ) -> typing.Any:
@@ -1119,7 +1122,12 @@ def convert_fstring_format_spec(
     version=">=3.5,<3.8",
 )
 @with_production(
-    "testlist_comp_tuple", "(test) ( comp_for | (',' (test))* [','] )", version="<3.5",
+    "testlist_comp_tuple",
+    "(test) ( comp_for | (',' (test))* [','] )",
+    version=">=2.4,<3.5",
+)
+@with_production(
+    "testlist_comp_tuple", "(test) ( (',' (test))* [','] )", version="<2.4",
 )
 def convert_testlist_comp_tuple(
     config: ParserConfig, children: typing.Sequence[typing.Any]
@@ -1265,7 +1273,10 @@ def _convert_sequencelike(
         + "((test) "
         + " (comp_for | (',' (test))* [','])) )"
     ),
-    version="<3.5",
+    version=">=2.7,<3.5",
+)
+@with_production(
+    "dictorsetmaker", ("(test ':' test) | (test)"), version="<2.7",
 )
 def convert_dictorsetmaker(
     config: ParserConfig, children: typing.Sequence[typing.Any]
@@ -1425,12 +1436,15 @@ def convert_argument(
 
 
 @with_production(
-    "arg_assign_comp_for", "test [comp_for] | test '=' test", version="<=3.7"
-)
-@with_production(
     "arg_assign_comp_for",
     "test [comp_for] | test ':=' test | test '=' test",
     version=">=3.8",
+)
+@with_production(
+    "arg_assign_comp_for", "test [comp_for] | test '=' test", version="<3.8,>=2.4"
+)
+@with_production(
+    "arg_assign_comp_for", "test | test '=' test", version="<2.4",
 )
 def convert_arg_assign_comp_for(
     config: ParserConfig, children: typing.Sequence[typing.Any]
