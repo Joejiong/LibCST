@@ -55,8 +55,6 @@ from libcst._nodes.statement import (
     Del,
     Else,
     ExceptHandler,
-    Exec,
-    ExecTarget,
     Expr,
     Finally,
     For,
@@ -70,6 +68,8 @@ from libcst._nodes.statement import (
     NameItem,
     Nonlocal,
     Pass,
+    Py2Exec,
+    Py2ExecTarget,
     Py2Print,
     Py2PrintExpr,
     Py2Raise,
@@ -881,7 +881,7 @@ def convert_exec_stmt(config: ParserConfig, children: Sequence[Any]) -> Any:
 
     if len(rest) == 2:
         (in_token, target_globals) = rest
-        target = ExecTarget(
+        target = Py2ExecTarget(
             whitespace_before_in=parse_simple_whitespace(
                 config, in_token.whitespace_before
             ),
@@ -893,7 +893,7 @@ def convert_exec_stmt(config: ParserConfig, children: Sequence[Any]) -> Any:
         )
     elif len(rest) == 4:
         (in_token, target_globals, comma, target_locals) = rest
-        target = ExecTarget(
+        target = Py2ExecTarget(
             whitespace_before_in=parse_simple_whitespace(
                 config, in_token.whitespace_before
             ),
@@ -912,7 +912,7 @@ def convert_exec_stmt(config: ParserConfig, children: Sequence[Any]) -> Any:
             target_locals=target_locals,
         )
 
-    exec_node = Exec(
+    exec_node = Py2Exec(
         whitespace_after_exec=parse_simple_whitespace(
             config, exec_token.whitespace_after
         ),
